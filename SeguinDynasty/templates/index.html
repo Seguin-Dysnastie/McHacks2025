@@ -46,17 +46,16 @@
     h1 {
       font-size: 3rem;
       color: rgb(255, 255, 255);
-      margin: -9px;
+      margin: -10px;
       width: 100%;
       height: 70px;
-      padding-bottom: 0px;
       background: linear-gradient(135deg, #accef1, #082d48);
       border-bottom: 4px solid #393939; /* Inner border */
+      border-top: 4px solid #393939;
       padding: 20px; /* Space between text and inner border */
       border-radius: 15px; /* Rounded corners for inner border */
       font-style: italic;
       text-align: center;
-      margin-bottom: 30px;
       position: fixed;
       top: 10px;
       left: 0px;
@@ -110,6 +109,41 @@
     button:hover {
       background-color: #2a3860;
     }
+
+    .table-container {
+      position: absolute;
+      top: 55%;
+      left: 8%;
+      width: 18%;
+      height: 57%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      
+      
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 16px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #2a516f;
+      color: #ffffff;
+    }
+
+    td {
+      background-color: #f9f9f9;
+    }
   </style>
 </head>
 
@@ -124,6 +158,58 @@
       <button type="submit">Search</button>
     </form>
   </div>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Index</th>
+          <th>Company Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>COST</td>
+          <td>Costco Wholesale Corp</td>
+        </tr>
+        <tr>
+          <td>MA</td>
+          <td>Mastercard Inc</td>
+        </tr>
+        <tr>
+          <td>MSFT</td>
+          <td>Microsoft</td>
+        </tr>
+        <tr>
+          <td>PG</td>
+          <td>Procter & Gamble Co</td>
+        </tr>
+        <tr>
+          <td>JNJ</td>
+          <td>Johnson & Johnson</td>
+        </tr>
+        <tr>
+          <td>PEP</td>
+          <td>PepsiCo Inc</td>
+        </tr>
+        <tr>
+          <td>CL</td>
+          <td>Colgate-Palmolive Co</td>
+        </tr>
+        <tr>
+          <td>HSY</td>
+          <td>Hershey Co</td>
+        </tr>
+        <tr>
+          <td>LMT</td>
+          <td>Lockheed Martin Corp</td>
+        </tr>
+        <tr>
+          <td>RY</td>
+          <td>Royal Bank of Canada</td>
+        </tr>
+      </tbody>
+  </table>
+</div>
 </body>
 
 
