@@ -9,7 +9,11 @@ body {
     height: 100vh;
     background-color: #f4f4f4;
   }
-  
+  title {
+    font-size: 20px;
+    font-weight: bold;
+    padding-bottom: 40px;
+  }
   .search-container {
     text-align: center;
   }
