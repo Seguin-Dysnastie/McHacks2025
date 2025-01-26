@@ -1,5 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 from datetime import date, timedelta
+from ui import get_company_name_and_price, extract_date_and_close
+from prediction import predict
 
 app = Flask(__name__)
 
@@ -63,11 +65,21 @@ def get_manual_data():
         "predPrices": predPrices
     }
 
-@app.route('/graph')
+@app.route('/graph',methods=['POST'])
 def show_graph():
     # Get your "manual" data (no random or increments)
-    data = get_manual_data()
-    return render_template('graph.html', data=data)
+    ticker = request.form.get('company')
+    predictionRange = ["2000-01-01","2023-12-31"]
+    interval = "1d"
+
+    prediction = predict(extract_date_and_close(ticker, *predictionRange, interval), 
+            extract_date_and_close(ticker, predictionRange[1], "2025-01-01", interval), 
+            300, ticker)
+    
+    
+    return render_template('graph.html', data=prediction)
+
+    #return render_template('graph.html', data=prediction)
 
 if __name__ == "__main__":
     app.run(debug=True)

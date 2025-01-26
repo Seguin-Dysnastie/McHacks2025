@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import yfinance as yf
-from ui import inverse_transform_data
+from ui import get_company_name_and_price
 
 
 def plot(data1, data2):
@@ -39,7 +39,7 @@ def get_prediction(indexes, length, points):
     return values
 
 
-def predict(pts, futurePts, length):
+def predict(pts, futurePts, length, ticker):
 
     def transform_data(data):
         """
@@ -116,12 +116,12 @@ def predict(pts, futurePts, length):
     bestPattern = sorted(bestPattern, key=lambda x:(x[0]+x[1]))[:10]
     predictionIndex = [pattern[2] for pattern in bestPattern]
     
-    real = futurePts[:length//5]
+    real = [pts[-1]] + futurePts[:length//5]
 
     prediction = get_prediction(predictionIndex, length, pts)
-    predictionPoints = []
+    predictionPoints = [pts[-1]]
     for (i,diff) in enumerate(prediction):
-        predictionPoints.append([real[i],pts[-1][1]+diff])
+        predictionPoints.append([real[i+1][0],pts[-1][1]+diff])
 
 
-    return (pts[-length:],real,predictionPoints)
+    return (pts[-length//2:],real,predictionPoints, get_company_name_and_price(ticker))

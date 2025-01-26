@@ -10,8 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return dates.map((dateStr, i) => ({ x: dateStr, y: prices[i] }));
   }
 
-  const realDataPoints = zipData(graphData.realDates, graphData.realPrices);
-  const predDataPoints = zipData(graphData.predDates, graphData.predPrices);
+  console.log("graphData:", graphData[3]);
+  const historicalDataPoints = graphData[0]
+  const realDataPoints = graphData[1]
+  const predDataPoints = graphData[2]
 
   const ctx = document.getElementById('stockGraph').getContext('2d');
   new Chart(ctx, {
@@ -19,12 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
     data: {
       datasets: [
         {
+          label: 'Historical Stock Prices',
+          data: historicalDataPoints,
+          borderColor: 'green',
+          borderWidth: 2,
+          tension: 0.3,
+          pointRadius: 3
+        },
+        {
           label: 'Real Stock Prices',
           data: realDataPoints,
           borderColor: 'blue',
           borderWidth: 2,
           tension: 0.3,
-          pointRadius: 5
+          pointRadius: 3
         },
         {
           label: 'Predicted Stock Prices',
@@ -32,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
           borderColor: 'red',
           borderWidth: 2,
           tension: 0.3,
-          pointRadius: 5
+          pointRadius: 3
         }
       ]
     },
@@ -61,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       plugins: {
         title: {
           display: true,
-          text: `Stock Chart for ${graphData.company || 'N/A'}`
+          text: `Stock Chart for ${graphData[3][1] || 'N/A'} (${graphData[3][0] || 'N/A'}) - $${graphData[1][0][1] || 'N/A'}`
         }
       }
     }
