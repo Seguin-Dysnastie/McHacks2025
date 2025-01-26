@@ -76,7 +76,7 @@ def get_company_name_and_price(ticker):
     stock = yf.Ticker(ticker)
     company_name = stock.info['shortName']
     current_price = stock.info['currentPrice']
-    return (ticker, company_name, current_price)
+    return (ticker.upper(), company_name, current_price)
 
 def inverse_transform_data(transformed_data, original_data):
     """

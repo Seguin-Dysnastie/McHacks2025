@@ -3,17 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------
   // CHART BUILDING
   // ------------------------------
-  function zipData(dates, prices) {
-    // Pair up each date with corresponding price
-    // returning {x, y} objects for Chart.js
-    if (!dates || !prices || dates.length !== prices.length) return [];
-    return dates.map((dateStr, i) => ({ x: dateStr, y: prices[i] }));
-  }
-
-  console.log("graphData:", graphData[3]);
+  console.log("graphData:", graphData);
   const historicalDataPoints = graphData[0]
   const realDataPoints = graphData[1]
   const predDataPoints = graphData[2]
+  const extremumPredDataPoints = graphData[4]
 
   const ctx = document.getElementById('stockGraph').getContext('2d');
   new Chart(ctx, {
@@ -43,6 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
           borderWidth: 2,
           tension: 0.3,
           pointRadius: 3
+        },
+        {
+          label: 'Prediction Extremums',
+          data: extremumPredDataPoints,
+          borderColor: 'lightgray',
+          borderWidth: 2,
+          tension: 0.3,
+          pointRadius: 2
         }
       ]
     },
@@ -58,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
           },
           title: {
             display: true,
-            text: 'Date'
+            text: 'Date by month',
+            align: 'end' // Aligns the title to the far left
           }
         },
         y: {

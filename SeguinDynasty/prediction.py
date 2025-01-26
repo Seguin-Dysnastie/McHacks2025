@@ -5,6 +5,7 @@ import yfinance as yf
 from ui import get_company_name_and_price
 import math
 
+cache = {}
 
 def plot(data1, data2):
     x1,y1 = zip(*data1)
@@ -41,6 +42,9 @@ def get_prediction(indexes, length, points):
             mean += points[index+1+i][1] - points[index][1]
             max_1 = max(max_1, points[index+1+i][1] - points[index][1])
             min_1 = min(min_1, points[index+1+i][1] - points[index][1])
+        
+        values_max.append(max_1*2)
+        values_min.append(min_1)
 
         values.append((mean/len(indexes))*3)
     
@@ -48,99 +52,97 @@ def get_prediction(indexes, length, points):
 
 
 def predict(pts, futurePts, length, ticker):
+    if ticker.upper() not in cache:
 
-    def transform_data(data):
-        """
-        Transforms a list of (time, price) tuples into (position, price) tuples.
-        
-        Parameters:
-        data (list of tuples): List of (time, price) tuples.
-        
-        Returns:
-        list of tuples: List of (position, price) tuples.
-        """
-        new_data = []
-        for element in data:
-            new_data.append((data.index(element), element[1]))
-        return new_data
+        def transform_data(data):
+            """
+            Transforms a list of (time, price) tuples into (position, price) tuples.
+            
+            Parameters:
+            data (list of tuples): List of (time, price) tuples.
+            
+            Returns:
+            list of tuples: List of (position, price) tuples.
+            """
+            new_data = []
+            for element in data:
+                new_data.append((data.index(element), element[1]))
+            return new_data
 
 
-    def fit_poly(data, tolerance=1e-5, max_iterations=10000):
-        """
-        Fits a polynomial regression model of degree 5 to the given data and refines it iteratively.
+        def fit_poly(data, tolerance=1e-5, max_iterations=10000):
+            """
+            Fits a polynomial regression model of degree 5 to the given data and refines it iteratively.
 
-        Parameters:
-            data (list of tuples): A list of tuples where each tuple contains (x, y) values.
-            tolerance (float): The tolerance for the difference between the points and the function.
-            max_iterations (int): The maximum number of iterations for refining the model.
+            Parameters:
+                data (list of tuples): A list of tuples where each tuple contains (x, y) values.
+                tolerance (float): The tolerance for the difference between the points and the function.
+                max_iterations (int): The maximum number of iterations for refining the model.
 
-        Returns:
-            np.poly1d: The refined polynomial function of degree 5.
-        """
-        # Extract x and y values from the data
-        x = np.array([nb for nb in range(len(data))])
-        y = np.array([point[1]-data[0][1] for point in data])
+            Returns:
+                np.poly1d: The refined polynomial function of degree 5.
+            """
+            # Extract x and y values from the data
+            x = np.array([nb for nb in range(len(data))])
+            y = np.array([point[1]-data[0][1] for point in data])
 
-        # Initial fit of a polynomial regression model of degree 5
-        coefficients = np.polyfit(x, y, length//4)
-        polynomial = np.poly1d(coefficients)
-
-        # Iteratively refine the model
-        for _ in range(max_iterations):
-            y_fit = polynomial(x)
-            error = np.mean((y - y_fit) ** 2)
-            if error < tolerance:
-                break
+            # Initial fit of a polynomial regression model of degree 5
             coefficients = np.polyfit(x, y, length//4)
             polynomial = np.poly1d(coefficients)
 
-        # Generate values for the fitted polynomial curve
-        x_fit = np.linspace(min(x), max(x), 100)
-        y_fit = polynomial(x_fit)
+            # Iteratively refine the model
+            for _ in range(max_iterations):
+                y_fit = polynomial(x)
+                error = np.mean((y - y_fit) ** 2)
+                if error < tolerance:
+                    break
+                coefficients = np.polyfit(x, y, length//4)
+                polynomial = np.poly1d(coefficients)
+
+            # Generate values for the fitted polynomial curve
+            x_fit = np.linspace(min(x), max(x), 100)
+            y_fit = polynomial(x_fit)
+            
+            # Calculate performance metrics
+            mse = mean_squared_error(y, polynomial(x))
+            rmse = np.sqrt(mse)
+            mae = mean_absolute_error(y, polynomial(x))
+            r2 = r2_score(y, polynomial(x))
+
+            return (mse, rmse, mae, r2, polynomial)
+
+
+        input_graph = transform_data(pts)[-length:]
         
-        # Calculate performance metrics
-        mse = mean_squared_error(y, polynomial(x))
-        rmse = np.sqrt(mse)
-        mae = mean_absolute_error(y, polynomial(x))
-        r2 = r2_score(y, polynomial(x))
-
-        return (mse, rmse, mae, r2, polynomial)
+        polynomial_function = fit_poly(transform_data(input_graph))
 
 
-    input_graph = transform_data(pts)[-length:]
-    
-    polynomial_function = fit_poly(transform_data(input_graph))
+        bestPattern = []
+        for i in range(0,len(pts[:-2*length]),50):
+            x = np.array([nb for nb in range(length)])
+            y = np.array([point[1]-pts[i][1] for point in pts[i:i+length]])
 
+            mae = mean_absolute_error(y, polynomial_function[-1](x))
+            mse = mean_squared_error(y, polynomial_function[-1](x))
+            
+            bestPattern.append((mae,mse,i))
 
-    bestPattern = []
-    for i in range(0,len(pts[:-2*length]),50):
-        x = np.array([nb for nb in range(length)])
-        y = np.array([point[1]-pts[i][1] for point in pts[i:i+length]])
-
-        mae = mean_absolute_error(y, polynomial_function[-1](x))
-        mse = mean_squared_error(y, polynomial_function[-1](x))
+        bestPattern = sorted(bestPattern, key=lambda x:(x[0]+x[1]))[:10]
+        predictionIndex = [pattern[2] for pattern in bestPattern]
         
-        bestPattern.append((mae,mse,i))
+        real = [pts[-1]] + futurePts[:length//5]
 
-    bestPattern = sorted(bestPattern, key=lambda x:(x[0]+x[1]))[:10]
-    predictionIndex = [pattern[2] for pattern in bestPattern]
-    
-    real = [pts[-1]] + futurePts[:length//5]
+        prediction, prediction_max, prediction_min = get_prediction(predictionIndex, length, pts)
 
+        predictionPoints = [pts[-1]]
+        prediction_max_points = [pts[-1]]
+        prediction_min_points = [pts[-1]]
+        for (i,diff) in enumerate(prediction):
+            predictionPoints.append([real[i+1][0],pts[-1][1]+diff])
+            prediction_max_points.append([real[i+1][0],pts[-1][1]+prediction_max[i]])
+            prediction_min_points.append([real[i+1][0],pts[-1][1]+prediction_min[i]])
 
-    
+        cache[ticker.upper()] = (pts[-150:],real,predictionPoints, get_company_name_and_price(ticker), prediction_max_points[::-1]+prediction_min_points)
 
-
-    prediction, prediction_max, prediction_min = get_prediction(predictionIndex, length, pts)
-
-    predictionPoints = [pts[-1]]
-    prediction_max_points = [pts[-1]]
-    prediction_min_points = [pts[-1]]
-    for (i,diff) in enumerate(prediction):
-        predictionPoints.append([real[i+1][0],pts[-1][1]+diff])
-        prediction_max_points.append([real[i+1][0],pts[-1][1]+prediction_max[i]])
-        prediction_min_points.append([real[i+1][0],pts[-1][1]+prediction_min[i]])
-
-
-    return (pts[-150:],real,predictionPoints, get_company_name_and_price(ticker), prediction_max_points, prediction_min_points)
+    return cache[ticker.upper()]
  

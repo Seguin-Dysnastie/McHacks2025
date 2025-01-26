@@ -69,12 +69,12 @@ def get_manual_data():
 def show_graph():
     # Get your "manual" data (no random or increments)
     ticker = request.form.get('company')
-    predictionRange = ["2000-01-01","2023-12-31"]
+    predictionRange = ["2010-01-01","2023-12-31"]
     interval = "1d"
 
     prediction = predict(extract_date_and_close(ticker, *predictionRange, interval), 
             extract_date_and_close(ticker, predictionRange[1], "2025-01-01", interval), 
-            300, ticker)
+            200, ticker)
     
     
     return render_template('graph.html', data=prediction)

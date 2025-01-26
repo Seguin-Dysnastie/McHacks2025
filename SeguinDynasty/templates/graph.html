@@ -51,7 +51,7 @@
     .search-container {
       position: absolute;
       top: 15px;
-      right: 340px;
+      right: 13.7%;
       z-index: 999;
     }
 
@@ -89,13 +89,13 @@
 
   <!-- Search Bar (top-left) -->
   <div class="search-container">
-    <form id="searchForm">
+    <form action="http://127.0.0.1:5000/graph" method="POST" id="searchForm">
       <!-- 
         Use <datalist> to display a simple "history" dropdown. 
         We'll manage the list items in script.js via localStorage.
       -->
       <datalist id="searchHistoryList"></datalist>
-      <input type="text" id="searchInput" placeholder="Search Symbol..." list="searchHistoryList">
+      <input type="text" name=company id="searchInput" placeholder="Search Symbol..." list="searchHistoryList" required>
       <button type="submit">Search</button>
     </form>
   </div>
