@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search for a Company</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    /* Style for body and centering */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f9f9f9;
+    }
+
+    /* Centering the container */
+    .container {
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    /* Styling for the title */
+    h1 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    /* Styling the form */
+    form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px; /* Space between input and button */
+    }
+
+    /* Input box styling */
+    input[type="text"] {
+      width: 100%;
+      max-width: 500px;
+      padding: 15px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    /* Submit button styling */
+    button {
+      padding: 15px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Search for a Company</h1>
+    <form action="/graph" method="POST">
+      <input type="text" name="company" placeholder="Enter company name" required>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+</body>
+</html>

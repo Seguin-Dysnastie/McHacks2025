@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stock Graph Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 1) Load Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- 2) Load Moment.js -->
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+  <!-- 3) Load Chart.js Moment Adapter -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
+
+  <style>
+    /* 
+      Trendy pastel gradient background. 
+      (Feel free to tweak these colors to taste.)
+    */
+    html, body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(135deg, #f9f9f9, #cce9ff);
+      overflow: hidden;
+    }
+
+    /* 
+      This ensures your chart is visible at a decent size,
+      with some margins so it's not edge-to-edge. 
+    */
+    .chart-container {
+      position: relative;
+      width: 90%;        /* Use 90% of the available width */
+      max-width: 1200px; /* Don't exceed 1200px if the screen is huge */
+      height: 600px;     /* Fixed height for the chart */
+      margin: 60px auto; /* Center horizontally and add top/bottom spacing */
+      background: #fff;  /* White background behind the chart */
+      border-radius: 8px; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    /* 
+      Search bar in the top-left corner, 
+      bumped down so it's not too close to the edges 
+    */
+    .search-container {
+      position: absolute;
+      top: 15px;
+      left: 150px;
+      z-index: 999;
+    }
+
+    /* A little styling for the input and button */
+    #searchInput {
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 160px;
+    }
+
+    #searchForm button {
+      padding: 6px 10px;
+      margin-left: 5px;
+      border-radius: 4px;
+      border: none;
+      background-color: #3498db;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    #searchForm button:hover {
+      background-color: #2980b9;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Search Bar (top-left) -->
+  <div class="search-container">
+    <form id="searchForm">
+      <!-- 
+        Use <datalist> to display a simple "history" dropdown. 
+        We'll manage the list items in script.js via localStorage.
+      -->
+      <datalist id="searchHistoryList"></datalist>
+      <input type="text" id="searchInput" placeholder="Search Symbol..." list="searchHistoryList">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <!-- Chart Area -->
+  <div class="chart-container">
+    <canvas id="stockGraph"></canvas>
+  </div>
+
+  <!-- 4) Pass Python data to JS as JSON -->
+  <script>
+    const graphData = {{ data|tojson }};
+  </script>
+
+  <!-- 5) Your custom chart script (script.js) -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
