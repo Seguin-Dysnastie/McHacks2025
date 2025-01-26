@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import yfinance as yf
 from ui import get_company_name_and_price
+import math
 
 
 def plot(data1, data2):
@@ -29,14 +30,21 @@ def plot(data1, data2):
 
 def get_prediction(indexes, length, points):
     values = []
+    values_max = []
+    values_min = [] 
     for i in range(length//5):
         mean = 0
+        max_1 = -math.inf
+        min_1 = math.inf
+
         for index in indexes:
             mean += points[index+1+i][1] - points[index][1]
+            max_1 = max(max_1, points[index+1+i][1] - points[index][1])
+            min_1 = min(min_1, points[index+1+i][1] - points[index][1])
 
         values.append((mean/len(indexes))*3)
     
-    return values
+    return values, values_max, values_min
 
 
 def predict(pts, futurePts, length, ticker):
@@ -103,8 +111,9 @@ def predict(pts, futurePts, length, ticker):
     
     polynomial_function = fit_poly(transform_data(input_graph))
 
+
     bestPattern = []
-    for i in range(0,len(pts[:-2*length]),30):
+    for i in range(0,len(pts[:-2*length]),50):
         x = np.array([nb for nb in range(length)])
         y = np.array([point[1]-pts[i][1] for point in pts[i:i+length]])
 
@@ -118,10 +127,20 @@ def predict(pts, futurePts, length, ticker):
     
     real = [pts[-1]] + futurePts[:length//5]
 
-    prediction = get_prediction(predictionIndex, length, pts)
+
+    
+
+
+    prediction, prediction_max, prediction_min = get_prediction(predictionIndex, length, pts)
+
     predictionPoints = [pts[-1]]
+    prediction_max_points = [pts[-1]]
+    prediction_min_points = [pts[-1]]
     for (i,diff) in enumerate(prediction):
         predictionPoints.append([real[i+1][0],pts[-1][1]+diff])
+        prediction_max_points.append([real[i+1][0],pts[-1][1]+prediction_max[i]])
+        prediction_min_points.append([real[i+1][0],pts[-1][1]+prediction_min[i]])
 
 
-    return (pts[-length//2:],real,predictionPoints, get_company_name_and_price(ticker))
+    return (pts[-150:],real,predictionPoints, get_company_name_and_price(ticker), prediction_max_points, prediction_min_points)
+ 
