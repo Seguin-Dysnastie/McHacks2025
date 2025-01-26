@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Full-Page Stock Graph with Header</title>
+  <!-- Load Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Let the HTML and body fill the screen with no default margin/padding */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* A simple header bar at the top for your search button */
+    .header {
+      width: 100%;
+      height: 60px;          /* You can adjust this height as needed */
+      background-color: #f2f2f2;
+      display: flex;
+      align-items: center;
+      padding-left: 20px;    /* Space on the left for the button */
+      box-sizing: border-box;
+    }
+
+    /* The chart container takes up the remaining space below the header */
+    .chart-container {
+      position: relative;
+      height: calc(100% - 60px);  /* Subtract the header height so it fits */
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header with a Search Button -->
+  <div class="header">
+    <button id="searchBtn">Search</button>
+  </div>
+
+  <!-- Full-width, full-height container for the chart -->
+  <div class="chart-container">
+    <canvas id="stockGraph"></canvas>
+  </div>
+
+  <script>
+    // 1) Generate daily labels from startDate to endDate
+    //    (plain JavaScript date increment)
+    function generateDailyLabels(startDate, endDate) {
+      const labels = [];
+      let currentDate = new Date(startDate);
+
+      while (currentDate <= new Date(endDate)) {
+        labels.push(currentDate.toISOString().split('T')[0]); // "YYYY-MM-DD"
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return labels;
+    }
+
+    // 2) Generate random stock-like prices
+    function generateMockData(labels) {
+      return labels.map(() => Math.floor(Math.random() * 1000));
+    }
+
+    // Prepare test data
+    const dailyLabels = generateDailyLabels('2021-01-01', '2023-04-30');
+    const mockData = generateMockData(dailyLabels);
+
+    // Build the chart
+    const ctx = document.getElementById('stockGraph').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dailyLabels,
+        datasets: [{
+          label: 'Mock Stock Prices (2021 - Apr 2023)',
+          data: mockData,
+          borderColor: 'blue',
+          borderWidth: 2,
+          pointRadius: 0, // Hide data point circles
+          tension: 0.3    // Smooth out the line
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,  // Let the chart stretch to fill its container
+        plugins: {
+          title: {
+            display: true,
+            text: 'Full-Page Stock Graph with Header Space'
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              maxTicksLimit: 20
+            },
+            title: {
+              display: true,
+              text: 'Dates'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Price ($)'
+            }
+          }
+        }
+      }
+    });
+
+    // Example: You could attach a click event to the search button
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      // Just a placeholder: You could redirect or open a modal, etc.
+      alert('Search button clicked!');
+    });
+  </script>
+</body>
+</html>
