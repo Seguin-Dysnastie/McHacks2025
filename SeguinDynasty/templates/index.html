@@ -15,22 +15,66 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: #f9f9f9;
+      background-color: #929195;
+      
+
     }
+
+    .background-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%; /* Cover the full width of the page */
+      height: 95vh; /* Cover the top half of the page */
+      background-image: url('/finance-8040361_1280.jpg'); /* Path to your background image */
+      background-size: cover; /* Cover the entire background */
+      background-repeat: no-repeat; /* Do not repeat the image */
+      background-position: center; /* Center the image */
+      z-index: -1; /* Place it behind other content */
+    }
+
 
     /* Centering the container */
     .container {
       text-align: center;
       width: 100%;
       max-width: 600px;
+      
+      
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: rgb(255, 255, 255);
+      margin: -9px;
+      width: 100%;
+      height: 70px;
+      padding-bottom: 0px;
+      background: linear-gradient(135deg, #accef1, #082d48);
+      border-bottom: 4px solid #393939; /* Inner border */
+      padding: 20px; /* Space between text and inner border */
+      border-radius: 15px; /* Rounded corners for inner border */
+      font-style: italic;
+      text-align: center;
+      margin-bottom: 30px;
+      position: fixed;
+      top: 10px;
+      left: 0px;
+      
     }
 
     /* Styling for the title */
-    h1 {
-      font-size: 2rem;
-      color: #333;
-      margin-bottom: 20px;
-    }
+    h2 {
+      font-size: 2.5rem;
+      width: 90%;
+      background: linear-gradient(135deg, #accef1, #082d48);
+      margin-bottom: 50px;
+      padding: 20px; /* Ajoute un espace entre le texte et le cadre */
+      border-radius: 15px; /* Ajoute des coins arrondis au cadre */
+      color: rgb(255, 255, 255); /* Couleur du texte */
+      font-style: italic;
+      box-shadow: 0 0 0 5px #393939; 
+}
 
     /* Styling the form */
     form {
@@ -45,8 +89,8 @@
       width: 100%;
       max-width: 500px;
       padding: 15px;
-      font-size: 16px;
-      border: 2px solid #ccc;
+      font-size: 25px;
+      border: 2px solid #585858;
       border-radius: 5px;
       box-sizing: border-box;
     }
@@ -54,27 +98,33 @@
     /* Submit button styling */
     button {
       padding: 15px 30px;
-      font-size: 16px;
+      font-size: 25px;
       border: none;
       border-radius: 5px;
-      background-color: #007BFF;
-      color: white;
+      background-color: #2a516f;
+      color: #ffffff;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #0056b3;
+      background-color: #2a3860;
     }
   </style>
 </head>
+
+
 <body>
+  <div class="background-container"></div>
+  <h1>Welcome to the Company Search</h1>
   <div class="container">
-    <h1>Search for a Company</h1>
+    <h2>Search for a Company</h2>
     <form action="/graph" method="POST">
       <input type="text" name="company" placeholder="Enter company name" required>
       <button type="submit">Search</button>
     </form>
   </div>
 </body>
+
+
 </html>

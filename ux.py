@@ -48,6 +48,8 @@ def get_stock_info(ticker):
     stock = yf.Ticker(ticker)
     return stock.info
 
+#print(get_stock_info('AAPL'))
+
 def extract_date_and_close(ticker, start_date, end_date, interval):
     """
     Extracts the date and closing price from a list of lists containing stock data.
@@ -82,7 +84,7 @@ def get_company_name_and_price(ticker):
     return (ticker, company_name, current_price)
 
 
-liste_2 = extract_date_and_close('AAPL', '1980-01-01', '2025-01-01', '1mo')
+#liste_2 = extract_date_and_close('AAPL', '-01-01', '2025-01-01', '1d')
 
 def transform_data(data):
     """
@@ -99,7 +101,7 @@ def transform_data(data):
         new_data.append((data.index(element), element[1]))
     return new_data
 
-input_graph = transform_data(liste_2)
+#input_graph = transform_data(liste_2)
 
 def fit_polynomial_degree_5(data, tolerance=1e-5, max_iterations=10000):
     """
@@ -215,8 +217,8 @@ def find_the_best_sublist(data, sublist_length):
 
     return best_sublist
 
-x = find_the_best_sublist(input_graph, 40)
-print(x)
+#x = find_the_best_sublist(input_graph, 40)
+#print(x)
 
 def adjust_and_plot(data1, data2):  
 
@@ -254,8 +256,26 @@ def adjust_and_plot(data1, data2):
     plt.legend()
     plt.show()
 
-adjust_and_plot(input_graph[-40:], x)
+#adjust_and_plot(input_graph[-40:], x)
 
+def inverse_transform_data(transformed_data, original_data):
+    """
+    Transforms a list of (index, price) tuples back to (date, price) tuples.
+
+    Parameters:
+        transformed_data (list of tuples): List of (index, price) tuples.
+        original_data (list of tuples): List of (date, price) tuples.
+
+    Returns:
+        list of tuples: List of (date, price) tuples.
+    """
+    # Create a mapping from index to date using the original data
+    index_to_date = {i: date for i, (date, price) in enumerate(original_data)}
+
+    # Transform the data back to (date, price) tuples
+    inverse_transformed_data = [(index_to_date[index], price) for index, price in transformed_data]
+
+    return inverse_transformed_data
 
 
 
