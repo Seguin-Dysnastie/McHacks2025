@@ -78,7 +78,24 @@ def get_company_name_and_price(ticker):
     current_price = stock.info['currentPrice']
     return (ticker, company_name, current_price)
 
+def inverse_transform_data(transformed_data, original_data):
+    """
+    Transforms a list of (index, price) tuples back to (date, price) tuples.
 
+    Parameters:
+        transformed_data (list of tuples): List of (index, price) tuples.
+        original_data (list of tuples): List of (date, price) tuples.
+
+    Returns:
+        list of tuples: List of (date, price) tuples.
+    """
+    # Create a mapping from index to date using the original data
+    index_to_date = {i: date for i, (date, price) in enumerate(original_data)}
+
+    # Transform the data back to (date, price) tuples
+    inverse_transformed_data = [(index_to_date[index], price) for index, price in transformed_data]
+
+    return inverse_transformed_data
 
 #list_1 = get_stock_data('AAPL', '2021-01-01', '2025-01-01', '1d')
 #print(extract_date_and_close(list_1))
